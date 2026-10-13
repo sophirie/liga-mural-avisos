@@ -1,0 +1,38 @@
+<ion-content class="ion-padding">
+  <div class="fone-container">
+    <div class="fone">
+      
+      <div class="header-box">
+        <h2>Mural de Avisos</h2>
+        <p class="subtitle">Faça login para continuar</p>
+      </div>
+
+      <div class="aviso erro" *ngIf="mensagemErro">
+        {{ mensagemErro }}
+      </div>
+
+      <div class="form-group">
+        <label class="label-field">E-mail</label>
+        <input type="email" [(ngModel)]="email" placeholder="seu@email.com" class="input-field" />
+      </div>
+
+      <div class="form-group">
+        <label class="label-field">Senha</label>
+        <input type="password" [(ngModel)]="senha" placeholder="******" class="input-field" />
+      </div>
+
+      <button (click)="entrar()" class="btn main">
+        Entrar
+      </button>
+
+      <button (click)="entrarComGoogle()" class="btn google">
+        Entrar com Google
+      </button>
+
+      <div class="footer-link">
+        <a routerLink="/cadastro">Não tem conta? Cadastre-se</a>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

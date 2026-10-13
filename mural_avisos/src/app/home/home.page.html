@@ -1,0 +1,66 @@
+<div class="topo">
+  <h1>Mural de Avisos</h1>
+</div>
+
+<div class="grid">
+  <!-- BLOCO 1 · LISTA INTERATIVA -->
+  <div class="bloco">
+    <h2>1 &middot; LISTA</h2>
+    <div class="fone">
+      <div class="tb">
+        <span>Mural de Avisos</span>
+        <span style="font-weight:600;font-size:0.8rem; cursor: pointer;" (click)="sair()">sair</span>
+      </div>
+      <div class="pad">
+        
+        <!-- Mensagem de erro caso atinja o limite -->
+        <div class="aviso erro" *ngIf="mensagemErro">
+          {{ mensagemErro }}
+        </div>
+
+        <div class="item" *ngFor="let aviso of avisos">
+          <div>
+            <strong>{{ aviso.titulo }}</strong>
+            <div class="muted">{{ aviso.fixado ? 'fixado' : 'normal' }}</div>
+          </div>
+          <span 
+            class="badge" 
+            [ngClass]="aviso.fixado ? 'warn' : 'ok'" 
+            style="cursor: pointer; padding: 6px 10px; font-size: 0.85rem;" 
+            (click)="alternarFixar(aviso)">
+            {{ aviso.fixado ? '-' : '+' }}
+          </span>
+        </div>
+
+        <button class="btn main">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCO 2 · REGRA DOS FIXADOS -->
+  <div class="bloco">
+    <h2>2 &middot; REGRA (FIXADOS: {{ contarFixados() }}/2)</h2>
+    <div class="fone">
+      <div class="tb">
+        <span>Mural de Avisos</span>
+        <span style="font-weight:600;font-size:0.8rem;">voltar</span>
+      </div>
+      <div class="pad">
+        <div class="aviso erro" *ngIf="contarFixados() >= 2">Max. 2 avisos fixados</div>
+        
+        <div class="item" *ngFor="let aviso of avisosFixados()">
+          <div>
+            <strong>{{ aviso.titulo }}</strong>
+            <div><span class="badge warn">fixado</span></div>
+          </div>
+        </div>
+
+        <div class="aviso erro" *ngIf="contarFixados() >= 2">Desafixe um para fixar outro</div>
+        
+        <div class="muted" style="text-align: center; margin-top: 20px;" *ngIf="contarFixados() < 2">
+          Selecione até 2 avisos na lista ao lado para fixar.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

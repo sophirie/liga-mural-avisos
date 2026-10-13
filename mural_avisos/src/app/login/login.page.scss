@@ -1,0 +1,152 @@
+:host {
+  display: block;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  --background: #e2e8f0;
+  background-color: #e2e8f0;
+  color: #0f172a;
+  min-height: 100vh;
+}
+
+ion-content {
+  --background: #e2e8f0;
+}
+
+.fone-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+}
+
+.fone {
+  width: 100%;
+  max-width: 350px;
+  padding: 24px 20px;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.18);
+  border: 3px solid #cbd5e1;
+}
+
+.header-box {
+  text-align: center;
+  margin-bottom: 20px;
+
+  h2 {
+    color: #0e7490;
+    font-size: 1.3rem;
+    margin: 0 0 4px 0;
+  }
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.label-field {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  box-sizing: border-box;
+  font-size: 0.92rem;
+
+  &:focus {
+    outline: none;
+    border-color: #0e7490;
+  }
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: 0;
+  margin-top: 16px;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  &.main { 
+    background: #0e7490; 
+  }
+}
+
+.footer-link {
+  text-align: center;
+  margin-top: 16px;
+
+  a {
+    font-size: 0.85rem;
+    color: #0e7490;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.aviso {
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+
+  &.erro { 
+    background: #fee2e2; 
+    color: #991b1b; 
+  }
+
+  &.sucesso {
+    background: #dcfce7;
+    color: #166534;
+  }
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  border: 0;
+  margin-top: 12px;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  &.main { 
+    background: #0e7490; 
+  }
+
+  &.google {
+    background: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+
+    &:hover {
+      background: #f8fafc;
+    }
+  }
+}
