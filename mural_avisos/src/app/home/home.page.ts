@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonContent } from '@ionic/angular';
+import { 
+  IonContent, 
+  IonHeader, 
+  IonToolbar,
+  IonCard,
+  IonCardContent
+} from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AvisoService, AvisoFirebase } from '../services/aviso.service';
 import { AuthService } from '../services/auth.service';
@@ -12,82 +18,117 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    IonContent
+    IonContent,
+    IonHeader,
+    IonToolbar,
+    IonCard,
+    IonCardContent
   ],
 })
 export class HomePage implements OnInit {
   
-  // Lista inicial padrão para aparecer IMEDIATAMENTE na tela
-  avisos: AvisoFirebase[] = [
-    { id: '1', titulo: 'Prova adiada', fixado: true },
-    { id: '2', titulo: 'Lista 3 no Moodle', fixado: false },
-    { id: '3', titulo: 'Reuniao de pais', fixado: false },
-    { id: '4', titulo: 'Doacao de sangue', fixado: true },
-    { id: '5', titulo: 'Saida antecipada', fixado: false }
-  ];
+  private avisoService = inject(AvisoService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
+  usuarioNome: string = 'Usuário';
+
+  avisos: AvisoFirebase[] = [];
+
+  filtroGeral: string = 'todos';
+  filtroFixados: string = 'todos';
   mensagemErro: string = '';
 
-  constructor(
-    private avisoService: AvisoService, 
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  ngOnInit() {
+    this.authService.observarUsuario((user) => {
+      if (user && user.email) {
+        this.usuarioNome = user.email.split('@')[0];
+      } else {
+        this.usuarioNome = 'Visitante';
+      }
+      this.cdr.detectChanges();
+    });
 
-  async ngOnInit() {
-    // Tenta carregar do Firestore em segundo plano para atualizar se houver dados salvos
     this.sincronizarComFirestore();
   }
 
   async sincronizarComFirestore() {
     try {
-      const dadosRemotos = await this.avisoService.getAvisos();
-      if (dadosRemotos && dadosRemotos.length > 0) {
-        this.avisos = dadosRemotos;
-      } else {
-        // Se o Firestore estiver vazio, salva os padrões lá para futuras sessões
-        for (const item of this.avisos) {
-          await this.avisoService.adicionarAviso(item.titulo, item.fixado);
-        }
-        this.avisos = await this.avisoService.getAvisos();
+      let dadosRemotos = await this.avisoService.getAvisos();
+
+      // Se o banco estiver vazio ou ainda tiver os dados antigos (menos de 8 itens ou sem o novo formato),
+      // nós populamos automaticamente com os novos avisos oficiais no Firestore.
+      const listaOficial = [
+        { titulo: 'Manutenção no laboratório de informática', fixado: false, autor: 'direcao' as const },
+        { titulo: 'Campeonato de ping-pong no intervalo', fixado: false, autor: 'gremio' as const },
+        { titulo: 'Prazo final para entrega do Projeto Integrador', fixado: false, autor: 'coordenacao' as const },
+        { titulo: 'Atualização de dados cadastrais na secretaria', fixado: false, autor: 'secretaria' as const },
+        { titulo: 'Entrega da lista de exercícios de Física', fixado: false, autor: 'professor' as const },
+        { titulo: 'Simulado geral preparatório para o SEPEI', fixado: false, autor: 'direcao' as const },
+        { titulo: 'Campanha de doação de agasalhos', fixado: false, autor: 'gremio' as const },
+        { titulo: 'Recuperação paralela da disciplina de Matemática', fixado: false, autor: 'professor' as const }
+      ];
+
+      if (dadosRemotos.length !== 8) {
+        // Reseta e popula o Firestore de verdade com os novos
+        dadosRemotos = await this.avisoService.resetarEPopularAvisos(listaOficial);
       }
+
+      this.avisos = dadosRemotos;
+      this.cdr.detectChanges();
     } catch (error) {
-      console.error('Erro ao sincronizar com o Firestore (usando padrão local):', error);
+      console.error('Erro ao sincronizar com o Firestore:', error);
     }
+  }
+
+  avisosFiltrados(): AvisoFirebase[] {
+    if (this.filtroGeral === 'todos') {
+      return this.avisos;
+    }
+    return this.avisos.filter(a => a.autor === this.filtroGeral);
+  }
+
+  avisosFixadosFiltrados(): AvisoFirebase[] {
+    const fixados = this.avisos.filter(a => a.fixado);
+    if (this.filtroFixados === 'todos') {
+      return fixados;
+    }
+    return fixados.filter(a => a.autor === this.filtroFixados);
   }
 
   contarFixados(): number {
     return this.avisos.filter(a => a.fixado).length;
   }
 
-  avisosFixados(): AvisoFirebase[] {
-    return this.avisos.filter(a => a.fixado);
-  }
-
   async alternarFixar(aviso: AvisoFirebase) {
-    this.mensagemErro = '';
+    if (!aviso || !aviso.id) return;
 
-    if (!aviso.fixado) {
+    this.mensagemErro = '';
+    const novoEstado = !aviso.fixado;
+
+    if (novoEstado) {
       if (this.contarFixados() >= 2) {
-        this.mensagemErro = 'Max. 2 avisos fixados. Desafixe um para fixar outro.';
+        this.mensagemErro = 'Máximo de 2 avisos fixados. Desafixe um para fixar outro.';
+        this.cdr.detectChanges();
         return;
       }
-      aviso.fixado = true;
-    } else {
-      aviso.fixado = false;
     }
 
-    // Salva a alteração no Firestore se tiver ID válido
-    if (aviso.id) {
-      try {
-        await this.avisoService.atualizarFixado(aviso.id, aviso.fixado);
-      } catch (error) {
-        console.error('Erro ao atualizar no Firestore:', error);
-      }
+    // Atualiza otimisticamente na tela
+    aviso.fixado = novoEstado;
+    this.cdr.detectChanges();
+
+    try {
+      // Salva a alteração direto no documento correto do Firestore
+      await this.avisoService.atualizarFixado(aviso.id, novoEstado);
+    } catch (error) {
+      console.error('Erro ao atualizar no Firestore:', error);
+      aviso.fixado = !novoEstado; // Reverte se falhar
+      this.cdr.detectChanges();
     }
   }
 
-  // Botão de sair funcional
   async sair() {
     try {
       await this.authService.logout();

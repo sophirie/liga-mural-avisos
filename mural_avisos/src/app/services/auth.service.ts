@@ -5,9 +5,10 @@ import {
   signOut, 
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
   User 
 } from 'firebase/auth';
-import { auth } from './firebase.config'; 
+import { auth } from './firebase.config';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,8 @@ export class AuthService {
     await signOut(auth);
   }
 
-  getUsuarioAtual(): User | null {
-    return auth.currentUser;
+  // Observa o estado do usuário em tempo real
+  observarUsuario(callback: (user: User | null) => void) {
+    onAuthStateChanged(auth, callback);
   }
 }
