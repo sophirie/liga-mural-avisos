@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  Unsubscribe,
   User 
 } from 'firebase/auth';
 import { auth } from './firebase.config';
@@ -38,7 +39,8 @@ export class AuthService {
   }
 
   // Observa o estado do usuário em tempo real
-  observarUsuario(callback: (user: User | null) => void) {
-    onAuthStateChanged(auth, callback);
+  // Retorna a função para parar de observar (chamar no ngOnDestroy)
+  observarUsuario(callback: (user: User | null) => void): Unsubscribe {
+    return onAuthStateChanged(auth, callback);
   }
 }

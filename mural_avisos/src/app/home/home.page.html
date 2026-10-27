@@ -1,125 +1,74 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar class="custom-toolbar">
-    <div class="header-container">
-      <div class="user-info">
-        <span class="user-label">Conectado como:</span>
-        <span class="user-email">{{ usuarioNome }}</span>
-      </div>
-      <button class="btn-sair" (click)="sair()">
-        Sair
-      </button>
-    </div>
-  </ion-toolbar>
-</ion-header>
+<app-barra-usuario></app-barra-usuario>
 
 <ion-content [fullscreen]="true" [scrollY]="true" class="custom-content">
   <div class="mural-wrapper">
-    
+
     <div class="mural-header">
       <h1>Mural de Avisos</h1>
-      <p class="subtitle">Fixe até 2 avisos importantes para a turma.</p>
+      <p class="subtitle">Fixe até {{ limiteFixados }} avisos importantes para a turma.</p>
+
+      <button type="button" class="btn-navegar" (click)="verAvisosFixados()">
+        Ver avisos fixados
+        <span class="contador-badge" [class.limite-atingido]="totalFixados() >= limiteFixados">
+          {{ totalFixados() }}/{{ limiteFixados }}
+        </span>
+      </button>
     </div>
 
-    @if (mensagemErro) {
+    @if (mensagemErro()) {
       <div class="aviso-alerta">
-        ⚠️ {{ mensagemErro }}
+        ⚠️ {{ mensagemErro() }}
       </div>
     }
 
-    <div class="grid-layout">
-      <!-- COLUNA 1: LISTA PRINCIPAL COM FILTRO -->
-      <ion-card class="card-section">
-        <ion-card-content>
-          <div class="section-title">
-            <span>Lista de Avisos</span>
-            <span class="contador-badge">{{ avisosFiltrados().length }}</span>
-          </div>
+    <ion-card class="card-section">
+      <ion-card-content>
+        <div class="section-title">
+          <span>Lista de Avisos</span>
+          <span class="contador-badge">{{ avisosFiltrados().length }}</span>
+        </div>
 
-          <!-- Filtros da Lista Geral -->
-          <div class="filtros-container">
-            <button (click)="filtroGeral = 'todos'" [class.ativo]="filtroGeral === 'todos'">Todos</button>
-            <button (click)="filtroGeral = 'direcao'" [class.ativo]="filtroGeral === 'direcao'">Direção</button>
-            <button (click)="filtroGeral = 'gremio'" [class.ativo]="filtroGeral === 'gremio'">Grêmio</button>
-            <button (click)="filtroGeral = 'coordenacao'" [class.ativo]="filtroGeral === 'coordenacao'">Coordenação</button>
-            <button (click)="filtroGeral = 'secretaria'" [class.ativo]="filtroGeral === 'secretaria'">Secretaria</button>
-            <button (click)="filtroGeral = 'professor'" [class.ativo]="filtroGeral === 'professor'">Professor</button>
-          </div>
+        <!-- Filtros da Lista Geral -->
+        <div class="filtros-container">
+          @for (f of filtros; track f.valor) {
+            <button type="button" (click)="filtro.set(f.valor)" [class.ativo]="filtro() === f.valor">
+              {{ f.rotulo }}
+            </button>
+          }
+        </div>
 
-          <div class="lista-avisos">
-            @for (aviso of avisosFiltrados(); track aviso.id) {
-              <div class="item-aviso">
-                <div class="item-info">
-                  <strong>{{ aviso.titulo }}</strong>
-                  <div class="detalhes-item">
-                    <span class="badge autor-badge">{{ aviso.autor }}</span>
-                    <span class="badge" [ngClass]="aviso.fixado ? 'warn' : 'ok'">
-                      {{ aviso.fixado ? 'fixado' : 'normal' }}
-                    </span>
-                  </div>
-                </div>
-                <button 
-                  type="button"
-                  class="btn-acao" 
-                  [ngClass]="aviso.fixado ? 'desafixar' : 'fixar'"
-                  (click)="$event.stopPropagation(); alternarFixar(aviso)">
-                  {{ aviso.fixado ? '-' : '+' }}
-                </button>
-              </div>
-            }
-          </div>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- COLUNA 2: PAINEL DE FIXADOS COM FILTRO -->
-      <ion-card class="card-section">
-        <ion-card-content>
-          <div class="section-title">
-            <span>Avisos Fixados</span>
-            <span class="contador-badge" [ngClass]="{'limite-atingido': contarFixados() >= 2}">
-              {{ contarFixados() }}/2
-            </span>
-          </div>
-
-          <!-- Filtros dos Fixados (Corrigido para usar filtroFixados) -->
-          <div class="filtros-container">
-            <button (click)="filtroFixados = 'todos'" [class.ativo]="filtroFixados === 'todos'">Todos</button>
-            <button (click)="filtroFixados = 'direcao'" [class.ativo]="filtroFixados === 'direcao'">Direção</button>
-            <button (click)="filtroFixados = 'gremio'" [class.ativo]="filtroFixados === 'gremio'">Grêmio</button>
-            <button (click)="filtroFixados = 'coordenacao'" [class.ativo]="filtroFixados === 'coordenacao'">Coordenação</button>
-            <button (click)="filtroFixados = 'secretaria'" [class.ativo]="filtroFixados === 'secretaria'">Secretaria</button>
-            <button (click)="filtroFixados = 'professor'" [class.ativo]="filtroFixados === 'professor'">Professor</button>
-          </div>
-
-          <div class="lista-avisos">
-            @if (avisosFixadosFiltrados().length === 0) {
-              <div class="aviso-vazio">
-                Nenhum aviso fixado encontrado para este filtro.
-              </div>
-            }
-
-            @for (aviso of avisosFixadosFiltrados(); track aviso.id) {
-              <div class="item-aviso fixado-item">
-                <div class="item-info">
-                  <strong>{{ aviso.titulo }}</strong>
-                  <div class="detalhes-item">
-                    <span class="badge autor-badge">{{ aviso.autor }}</span>
-                    <span class="badge warn">fixado</span>
-                  </div>
-                </div>
-                <button 
-                  type="button" 
-                  class="btn-acao desafixar" 
-                  (click)="$event.stopPropagation(); alternarFixar(aviso)">
-                  -
-                </button>
-              </div>
-            }
-          </div>
-
-          @if (contarFixados() >= 2) {
-            <div class="regra-aviso">
-              ⚠️ Máximo de 2 fixados atingido. Desafixe um para fixar outro.
+        <div class="lista-avisos">
+          @if (avisosFiltrados().length === 0) {
+            <div class="aviso-vazio">
+              Nenhum aviso encontrado para este filtro.
             </div>
           }
-        </ion-card-content>
-      </ion-card>
+
+          @for (aviso of avisosFiltrados(); track aviso.id) {
+            <div class="item-aviso">
+              <div class="item-info">
+                <strong>{{ aviso.titulo }}</strong>
+                <div class="detalhes-item">
+                  <span class="badge autor-badge">{{ aviso.autor }}</span>
+                  <span class="badge" [class.warn]="aviso.fixado" [class.ok]="!aviso.fixado">
+                    {{ aviso.fixado ? 'fixado' : 'normal' }}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-acao"
+                [class.desafixar]="aviso.fixado"
+                [class.fixar]="!aviso.fixado"
+                [attr.aria-label]="aviso.fixado ? 'Desafixar aviso' : 'Fixar aviso'"
+                (click)="$event.stopPropagation(); alternarFixar(aviso)">
+                {{ aviso.fixado ? '-' : '+' }}
+              </button>
+            </div>
+          }
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.custom-toolbar {
+  --background: #0e7490;
+  --color: #ffffff;
+  padding: 0 16px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+
+  .user-label {
+    font-size: 0.75rem;
+    color: #a5f3fc;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .user-email {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+  }
+}
+
+.btn-sair {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+}

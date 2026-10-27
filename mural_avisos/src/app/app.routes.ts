@@ -17,6 +17,10 @@ export const routes: Routes = [
     component: HomePage,
   },
   {
+    path: 'avisos-fixados',
+    loadComponent: () => import('./avisos-fixados/avisos-fixados.page').then( m => m.AvisosFixadosPage)
+  },
+  {
     path: 'cadastro',
     loadComponent: () => import('./cadastro/cadastro.page').then( m => m.CadastroPage)
   },

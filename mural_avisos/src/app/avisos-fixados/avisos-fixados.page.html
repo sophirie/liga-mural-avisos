@@ -1,0 +1,79 @@
+<app-barra-usuario></app-barra-usuario>
+
+<ion-content [fullscreen]="true" [scrollY]="true" class="custom-content">
+  <div class="mural-wrapper">
+
+    <button type="button" class="btn-voltar" (click)="voltar()">
+      ← Lista de avisos
+    </button>
+
+    <div class="mural-header">
+      <h1>Avisos Fixados</h1>
+      <p class="subtitle">Até {{ limiteFixados }} avisos importantes ficam em destaque para a turma.</p>
+    </div>
+
+    @if (mensagemErro()) {
+      <div class="aviso-alerta">
+        ⚠️ {{ mensagemErro() }}
+      </div>
+    }
+
+    <ion-card class="card-section">
+      <ion-card-content>
+        <div class="section-title">
+          <span>Avisos Fixados</span>
+          <span class="contador-badge" [class.limite-atingido]="totalFixados() >= limiteFixados">
+            {{ totalFixados() }}/{{ limiteFixados }}
+          </span>
+        </div>
+
+        <!-- Filtros dos Fixados -->
+        <div class="filtros-container">
+          @for (f of filtros; track f.valor) {
+            <button type="button" (click)="filtro.set(f.valor)" [class.ativo]="filtro() === f.valor">
+              {{ f.rotulo }}
+            </button>
+          }
+        </div>
+
+        <div class="lista-avisos">
+          @if (avisosFixadosFiltrados().length === 0) {
+            <div class="aviso-vazio">
+              @if (totalFixados() === 0) {
+                Nenhum aviso fixado ainda. Volte à lista e fixe um aviso com o botão +.
+              } @else {
+                Nenhum aviso fixado encontrado para este filtro.
+              }
+            </div>
+          }
+
+          @for (aviso of avisosFixadosFiltrados(); track aviso.id) {
+            <div class="item-aviso fixado-item">
+              <div class="item-info">
+                <strong>{{ aviso.titulo }}</strong>
+                <div class="detalhes-item">
+                  <span class="badge autor-badge">{{ aviso.autor }}</span>
+                  <span class="badge warn">fixado</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-acao desafixar"
+                aria-label="Desafixar aviso"
+                (click)="$event.stopPropagation(); desafixar(aviso)">
+                -
+              </button>
+            </div>
+          }
+        </div>
+
+        @if (totalFixados() >= limiteFixados) {
+          <div class="regra-aviso">
+            ⚠️ Máximo de {{ limiteFixados }} fixados atingido. Desafixe um para fixar outro.
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

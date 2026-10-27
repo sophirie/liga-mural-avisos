@@ -3,18 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Print Â· Mural de Avisos</title>
+<title>Print · Mural de Avisos</title>
 <link rel="stylesheet" href="prints.css">
-<style>.tb{background:#0e7490}.btn.main{background:#0e7490}</style>
+<style>
+body{background:#fff;padding:16px 12px 32px}
+.exemplo{text-align:center;font-size:0.72rem;letter-spacing:0.16em;font-weight:800;color:#94a3b8;margin:0 0 12px}
+.bloco h2{display:none}
+.fone{box-shadow:none;border:0;border-radius:12px;min-height:0}
+.tb{background:#0e7490}
+.btn.main{background:#0e7490}
+</style>
 </head>
 <body>
-<div class="topo">
-  <h1>Mural de Avisos</h1>
-  <span>Olhe as telas. Monte parecido. Nao precisa pixel-perfect.</span>
-</div>
+<p class="exemplo">EXEMPLO VISUAL</p>
 <div class="grid">
   <div class="bloco">
-    <h2>1 Â· Lista</h2>
     <div class="fone">
       <div class="tb"><span>Mural de Avisos</span><span style="font-weight:600;font-size:0.8rem;">sair</span></div>
       <div class="pad">
@@ -28,11 +31,27 @@
     </div>
   </div>
   <div class="bloco">
-    <h2>2 Â· Regra</h2>
     <div class="fone">
       <div class="tb"><span>Mural de Avisos</span><span style="font-weight:600;font-size:0.8rem;">voltar</span></div>
       <div class="pad">
-        <div class="aviso erro">Max. 2 avisos fixados</div><div class="item"><div><strong>Prova adiada</strong><div><span class="badge warn">fixado</span></div></div></div><div class="item"><div><strong>Doacao de sangue</strong><div><span class="badge warn">fixado</span></div></div></div><div class="aviso erro">Desafixe um para fixar outro</div>
+        <div class="aviso erro">Max. 2 avisos fixados</div>
+        <div class="item">
+        <div>
+        <strong>Prova adiada</strong>
+        <div>
+        <span class="badge warn">fixado</span>
+        </div>
+        </div>
+        </div>
+        <div class="item">
+        <div>
+        <strong>Doacao de sangue</strong>
+        <div>
+        <span class="badge warn">fixado</span>
+        </div>
+        </div>
+        </div>
+        <div class="aviso erro">Desafixe um para fixar outro</div>
       </div>
     </div>
   </div>
