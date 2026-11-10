@@ -3,12 +3,12 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDBYSvowMRWSI1DezIamPfxMgbUq4YkCSg",
-  authDomain: "mural-git.firebaseapp.com",
-  projectId: "mural-git",
-  storageBucket: "mural-git.firebasestorage.app",
-  messagingSenderId: "932475626190",
-  appId: "1:932475626190:web:f22dc6f77fc534c2d7a69f"
+  apiKey: "AIzaSyBVF_y3ug6V8HveU697c40VShBFILPzamg",
+  authDomain: "mural-avisos-88373.firebaseapp.com",
+  projectId: "mural-avisos-88373",
+  storageBucket: "mural-avisos-88373.firebasestorage.app",
+  messagingSenderId: "263043834791",
+  appId: "1:263043834791:web:a0c89e336ecfdc6549cc82"
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
